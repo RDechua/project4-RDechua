@@ -31,15 +31,29 @@ public class Graph {
         // FILL IN CODE
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) { // Go through each line in the file and add it into the tree
             String str;
+            int i = 0;
+            numEdges = 0;
             while ((str = br.readLine()) != null) {
                 if(str.equals("NODES")){
-                    numNodes = Integer.parseInt(br.readLine());
+                    numNodes = Integer.parseInt(br.readLine()) + 1;
+                }else if(str.equals("ARCS")){
+                    while((str = br.readLine()) != null){
+                        String[] temp = str.split(" ");
+                        Edge edge1 = new Edge(labelsToIndices.get(temp[1]), Integer.parseInt(temp[2]));
+                        Edge edge2 = new Edge(labelsToIndices.get(temp[0]), Integer.parseInt(temp[2]));
+                        addEdge(labelsToIndices.get(temp[0]), edge1);
+                        addEdge(labelsToIndices.get(temp[1]), edge2);
+                        numEdges += 2;
+                    }
                 }
+                String[] temp = str.split(" ");
+                CityNode node = new CityNode(temp[0], Double.parseDouble(temp[1]), Double.parseDouble(temp[2]));
+                addNode(node);
+                labelsToIndices.put(temp[0], i++);
             }
         }catch (IOException e) {
             System.out.println(e);
         }
-
         nodes = new CityNode[numNodes];
 
     }
@@ -90,8 +104,7 @@ public class Graph {
      * @return its integer id
      */
     public int getId(CityNode city) {
-
-        return -1; // Don't forget to change this
+        return labelsToIndices.get(city.getCity()); // Don't forget to change this
     }
 
     /**
