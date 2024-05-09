@@ -7,6 +7,9 @@ package graph;
  */
 
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +29,18 @@ public class Graph {
      */
     public void loadGraph(String filename) {
         // FILL IN CODE
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) { // Go through each line in the file and add it into the tree
+            String str;
+            while ((str = br.readLine()) != null) {
+                if(str.equals("NODES")){
+                    numNodes = Integer.parseInt(br.readLine());
+                }
+            }
+        }catch (IOException e) {
+            System.out.println(e);
+        }
+
+        nodes = new CityNode[numNodes];
 
     }
 
@@ -38,6 +53,11 @@ public class Graph {
      */
     public void addNode(CityNode node) {
         // FILL IN CODE
+        int i = 0;
+        while(nodes[i] != null){
+            i++;
+        }
+        nodes[i] = node;
     }
 
     /**
@@ -57,6 +77,11 @@ public class Graph {
      */
     public void addEdge(int nodeId, Edge edge) {
         // FILL IN CODE
+        Edge head = adjacencyList[nodeId]; // head of the linked list for this  node
+        adjacencyList[nodeId] = edge; // insert in front
+        if (head != null) {
+            edge.setNext(head);
+        }
     }
 
     /**
@@ -85,6 +110,8 @@ public class Graph {
         }
         Point[][] edges2D = new Point[numEdges][2];
         // FILL IN CODE
+
+
 
         return edges2D;
     }
