@@ -10,6 +10,7 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,29 +34,38 @@ public class Graph {
             String str;
             int i = 0;
             numEdges = 0;
-            while ((str = br.readLine()) != null) {
+            labelsToIndices = new HashMap<String, Integer>();
+
+            if((str = br.readLine()) != null){
                 if(str.equals("NODES")){
-                    numNodes = Integer.parseInt(br.readLine()) + 1;
-                }else if(str.equals("ARCS")){
-                    while((str = br.readLine()) != null){
-                        String[] temp = str.split(" ");
-                        Edge edge1 = new Edge(labelsToIndices.get(temp[1]), Integer.parseInt(temp[2]));
-                        Edge edge2 = new Edge(labelsToIndices.get(temp[0]), Integer.parseInt(temp[2]));
-                        addEdge(labelsToIndices.get(temp[0]), edge1);
-                        addEdge(labelsToIndices.get(temp[1]), edge2);
-                        numEdges += 2;
-                    }
+                    numNodes = Integer.parseInt(br.readLine());
                 }
+            }
+            nodes = new CityNode[numNodes];
+            adjacencyList = new Edge[numNodes];
+
+            while ((str = br.readLine()) != null && !str.equals("ARCS")) {
                 String[] temp = str.split(" ");
                 CityNode node = new CityNode(temp[0], Double.parseDouble(temp[1]), Double.parseDouble(temp[2]));
-                addNode(node);
                 labelsToIndices.put(temp[0], i++);
+                addNode(node);
             }
+
+
+            while((str = br.readLine()) != null){
+                String[] temp = str.split(" ");
+                Edge edge1 = new Edge(labelsToIndices.get(temp[1]), Integer.parseInt(temp[2]));
+                Edge edge2 = new Edge(labelsToIndices.get(temp[0]), Integer.parseInt(temp[2]));
+                addEdge(labelsToIndices.get(temp[0]), edge1);
+                addEdge(labelsToIndices.get(temp[1]), edge2);
+                numEdges += 2;
+            }
+            System.out.println(numEdges);
+
+
         }catch (IOException e) {
             System.out.println(e);
         }
-        nodes = new CityNode[numNodes];
-
     }
 
     /**
@@ -67,11 +77,7 @@ public class Graph {
      */
     public void addNode(CityNode node) {
         // FILL IN CODE
-        int i = 0;
-        while(nodes[i] != null){
-            i++;
-        }
-        nodes[i] = node;
+        nodes[getId(node)] = node;
     }
 
     /**
@@ -91,7 +97,7 @@ public class Graph {
      */
     public void addEdge(int nodeId, Edge edge) {
         // FILL IN CODE
-        Edge head = adjacencyList[nodeId]; // head of the linked list for this  node
+        Edge head = adjacencyList[nodeId];
         adjacencyList[nodeId] = edge; // insert in front
         if (head != null) {
             edge.setNext(head);
@@ -123,8 +129,16 @@ public class Graph {
         }
         Point[][] edges2D = new Point[numEdges][2];
         // FILL IN CODE
-
-
+        int j = 0;
+        for(int i = 0; i < adjacencyList.length; i++){
+            Edge curr = adjacencyList[i];
+            while(curr != null){
+                edges2D[j][0] = new Point(nodes[i].getLocation());
+                edges2D[j][1] = new Point(nodes[curr.getNeighbor()].getLocation());
+                curr = curr.getNext();
+                j++;
+            }
+        }
 
         return edges2D;
     }
