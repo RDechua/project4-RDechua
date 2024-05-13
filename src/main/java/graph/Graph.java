@@ -68,6 +68,10 @@ public class Graph {
         }
     }
 
+    public Edge[] getAdjacencyList() {
+        return adjacencyList;
+    }
+
     /**
      * Add a node to the array of nodes.
      * Increment numNodes variable.
@@ -183,11 +187,14 @@ public class Graph {
      * @return array where each element is an array of 2 points
      */
     public Point[][] getPath(List<Integer> pathOfNodes) {
-        int i = 0;
+        //int i = 0;
         Point[][] edges2D = new Point[pathOfNodes.size()-1][2];
         // Each "edge" is an array of size two (one Point is origin, one Point is destination)
         // FILL IN CODE
-
+        for(int i = 0; i < edges2D.length - 1; i++){
+            edges2D[i][0] = new Point(nodes[pathOfNodes.get(i)].getLocation());
+            edges2D[i][1] = new Point(nodes[pathOfNodes.get(i + 1)].getLocation());
+        }
         return edges2D;
     }
 
