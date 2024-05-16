@@ -39,6 +39,7 @@ public class Graph {
             if((str = br.readLine()) != null){
                 if(str.equals("NODES")){
                     numNodes = Integer.parseInt(br.readLine());
+                    System.out.println(numNodes);
                 }
             }
             nodes = new CityNode[numNodes];
@@ -50,7 +51,6 @@ public class Graph {
                 labelsToIndices.put(temp[0], i++);
                 addNode(node);
             }
-
 
             while((str = br.readLine()) != null){
                 String[] temp = str.split(" ");
@@ -68,9 +68,11 @@ public class Graph {
         }
     }
 
-    public Edge[] getAdjacencyList() {
-        return adjacencyList;
+    public Edge getAdjacencyList(int nodeId) {
+        return adjacencyList[nodeId];
     }
+
+
 
     /**
      * Add a node to the array of nodes.
@@ -191,7 +193,7 @@ public class Graph {
         Point[][] edges2D = new Point[pathOfNodes.size()-1][2];
         // Each "edge" is an array of size two (one Point is origin, one Point is destination)
         // FILL IN CODE
-        for(int i = 0; i < edges2D.length - 1; i++){
+        for(int i = 0; i < pathOfNodes.size()-1; i++){
             edges2D[i][0] = new Point(nodes[pathOfNodes.get(i)].getLocation());
             edges2D[i][1] = new Point(nodes[pathOfNodes.get(i + 1)].getLocation());
         }
