@@ -35,44 +35,35 @@ public class Graph {
             int i = 0;
             numEdges = 0;
             labelsToIndices = new HashMap<String, Integer>();
-
             if((str = br.readLine()) != null){
                 if(str.equals("NODES")){
-                    numNodes = Integer.parseInt(br.readLine());
-                    System.out.println(numNodes);
+                    numNodes = Integer.parseInt(br.readLine()); // Retrieves the given numNodes from the file
                 }
             }
             nodes = new CityNode[numNodes];
             adjacencyList = new Edge[numNodes];
-
             while ((str = br.readLine()) != null && !str.equals("ARCS")) {
                 String[] temp = str.split(" ");
                 CityNode node = new CityNode(temp[0], Double.parseDouble(temp[1]), Double.parseDouble(temp[2]));
                 labelsToIndices.put(temp[0], i++);
-                addNode(node);
+                addNode(node); // Assigns CityNodes accordingly
             }
-
             while((str = br.readLine()) != null){
                 String[] temp = str.split(" ");
                 Edge edge1 = new Edge(labelsToIndices.get(temp[1]), Integer.parseInt(temp[2]));
                 Edge edge2 = new Edge(labelsToIndices.get(temp[0]), Integer.parseInt(temp[2]));
-                addEdge(labelsToIndices.get(temp[0]), edge1);
+                addEdge(labelsToIndices.get(temp[0]), edge1); // Adds edges both ways
                 addEdge(labelsToIndices.get(temp[1]), edge2);
                 numEdges += 2;
             }
-            System.out.println(numEdges);
-
-
         }catch (IOException e) {
             System.out.println(e);
         }
     }
 
     public Edge getAdjacencyList(int nodeId) {
-        return adjacencyList[nodeId];
+        return adjacencyList[nodeId]; // Helper method for Dijkstra, retrieves the adjacencyList
     }
-
-
 
     /**
      * Add a node to the array of nodes.
@@ -82,7 +73,6 @@ public class Graph {
      * @param node a CityNode to add to the graph
      */
     public void addNode(CityNode node) {
-        // FILL IN CODE
         nodes[getId(node)] = node;
     }
 
@@ -102,9 +92,8 @@ public class Graph {
      * @param edge edge to add
      */
     public void addEdge(int nodeId, Edge edge) {
-        // FILL IN CODE
         Edge head = adjacencyList[nodeId];
-        adjacencyList[nodeId] = edge; // insert in front
+        adjacencyList[nodeId] = edge; // Inserts new edge to the front
         if (head != null) {
             edge.setNext(head);
         }
@@ -134,18 +123,16 @@ public class Graph {
             return null;
         }
         Point[][] edges2D = new Point[numEdges][2];
-        // FILL IN CODE
         int j = 0;
         for(int i = 0; i < adjacencyList.length; i++){
             Edge curr = adjacencyList[i];
             while(curr != null){
-                edges2D[j][0] = new Point(nodes[i].getLocation());
+                edges2D[j][0] = new Point(nodes[i].getLocation()); // Inserts current's and the destination's locations
                 edges2D[j][1] = new Point(nodes[curr.getNeighbor()].getLocation());
                 curr = curr.getNext();
                 j++;
             }
         }
-
         return edges2D;
     }
 
@@ -192,9 +179,8 @@ public class Graph {
         //int i = 0;
         Point[][] edges2D = new Point[pathOfNodes.size()-1][2];
         // Each "edge" is an array of size two (one Point is origin, one Point is destination)
-        // FILL IN CODE
         for(int i = 0; i < pathOfNodes.size()-1; i++){
-            edges2D[i][0] = new Point(nodes[pathOfNodes.get(i)].getLocation());
+            edges2D[i][0] = new Point(nodes[pathOfNodes.get(i)].getLocation()); // Inserts current and next locations
             edges2D[i][1] = new Point(nodes[pathOfNodes.get(i + 1)].getLocation());
         }
         return edges2D;
@@ -227,5 +213,4 @@ public class Graph {
         }
         return null;
     }
-
 }

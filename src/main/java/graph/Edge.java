@@ -20,16 +20,8 @@ class Edge {
         return neighbor;
     }
 
-    public void setNeighbor(int neighbor) {
-        this.neighbor = neighbor;
-    }
-
     public int getCost() {
         return cost;
-    }
-
-    public void setCost(int cost) {
-        this.cost = cost;
     }
 
     public Edge getNext() {
@@ -39,7 +31,5 @@ class Edge {
     public void setNext(Edge next) {
         this.next = next;
     }
-
-
 
 }
