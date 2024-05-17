@@ -7,12 +7,17 @@ package graph;
  *  You can still get 90% if you do not use a priority queue.
  */
 
+
+import org.w3c.dom.Node;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Dijkstra {
     private Graph graph; // stores the graph of CityNode-s and edges connecting them
     private List<Integer> shortestPath = null; // nodes that are part of the shortest path
+
+    private Object[][] table;
 
     /** Constructor
      *
@@ -33,22 +38,61 @@ public class Dijkstra {
      * @return the ArrayList of nodeIds (of nodes on the shortest path)
      */
     public List<Integer> computeShortestPath(CityNode origin, CityNode destination) {
+        int numNodes = graph.numNodes();
+        int sourceId = graph.getId(origin);
+        int destId = graph.getId(destination);
 
-        // FILL IN CODE
+        table = new Object[numNodes][3];
+        for (int i = 0; i < numNodes; i++) {
+            table[i][0] = Integer.MAX_VALUE;
+            table[i][1] = null;
+            table[i][2] = false;
+        }
+        table[sourceId][0] = 0;
 
-        // Create and initialize Dijkstra's table
+        PriorityQueue pq = new PriorityQueue(numNodes);
+        pq.insert(sourceId, 0);
 
-        // If you are going for a 100% credit,
-        // You also need to create and initialize a Priority Queue - you need to implement your own, NOT use a built-in one!
-        // If you are ok with getting 90% on the assignment, you can implement Dijkstra's without a priority queue.
+        while (!pq.isEmpty()) {
+            int u = pq.removeMin();
+            table[u][2] = true;
 
-        // Run Dijkstra
+            if (u == destId) {
+                break;
+            }
 
-        // Compute the nodes on the shortest path by "backtracking" using the table
+            Edge edge = graph.getAdjacencyList(u);
 
-        // The result should be in an instance variable called "shortestPath" and
-        // should also be returned by the method
-        return null; // don't forget to change it
+            while (edge != null) {
+                int v = edge.getNeighbor();
+                int cost = edge.getCost();
+                if (!((boolean) table[v][2]) &&
+                        ((int) table[u][0] + cost < (int) table[v][0])) {
+                    table[v][0] = (int) table[u][0] + cost;
+                    table[v][1] = u;
+                    if (pq.contains(v)) {
+                        pq.reduceKey(v, (int) table[v][0]);
+                    } else {
+                        pq.insert(v, (int) table[v][0]);
+                    }
+                }
+                edge = edge.getNext();
+            }
+        }
+
+        shortestPath = new ArrayList<Integer>();
+
+        while (destId != sourceId) {
+            shortestPath.add(0, destId);
+            destId = (int) table[destId][1];
+        }
+
+
+        shortestPath.add(0, sourceId);
+
+
+        System.out.println(table[shortestPath.get(shortestPath.size()-1)][0]);
+        return shortestPath;
     }
 
     /**
