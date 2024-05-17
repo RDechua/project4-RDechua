@@ -41,36 +41,31 @@ public class Dijkstra {
         int numNodes = graph.numNodes();
         int sourceId = graph.getId(origin);
         int destId = graph.getId(destination);
-
         table = new Object[numNodes][3];
-        for (int i = 0; i < numNodes; i++) {
+        for (int i = 0; i < numNodes; i++) { // Initialize Dijkstra's table
             table[i][0] = Integer.MAX_VALUE;
             table[i][1] = null;
             table[i][2] = false;
         }
-        table[sourceId][0] = 0;
-
+        table[sourceId][0] = 0; // Set the distance to source = 0
         PriorityQueue pq = new PriorityQueue(numNodes);
         pq.insert(sourceId, 0);
-
         while (!pq.isEmpty()) {
             int u = pq.removeMin();
-            table[u][2] = true;
+            table[u][2] = true; // Marks current city as visited
 
-            if (u == destId) {
+            if (u == destId) { // Base case
                 break;
             }
-
             Edge edge = graph.getAdjacencyList(u);
-
-            while (edge != null) {
+            while (edge != null) { // Iterates through the edges and compare its distance
                 int v = edge.getNeighbor();
                 int cost = edge.getCost();
                 if (!((boolean) table[v][2]) &&
-                        ((int) table[u][0] + cost < (int) table[v][0])) {
+                        ((int) table[u][0] + cost < (int) table[v][0])) { // Check if the edge is visited
                     table[v][0] = (int) table[u][0] + cost;
                     table[v][1] = u;
-                    if (pq.contains(v)) {
+                    if (pq.contains(v)) { // If the edge is already in the priority queue update its distance, insert otherwise
                         pq.reduceKey(v, (int) table[v][0]);
                     } else {
                         pq.insert(v, (int) table[v][0]);
@@ -79,18 +74,12 @@ public class Dijkstra {
                 edge = edge.getNext();
             }
         }
-
         shortestPath = new ArrayList<Integer>();
-
-        while (destId != sourceId) {
+        while (destId != sourceId) { // Backtrack using the table to compute the shortest path
             shortestPath.add(0, destId);
             destId = (int) table[destId][1];
         }
-
-
         shortestPath.add(0, sourceId);
-
-
         System.out.println(table[shortestPath.get(shortestPath.size()-1)][0]);
         return shortestPath;
     }
